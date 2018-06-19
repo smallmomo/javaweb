@@ -2,8 +2,8 @@
 node("master") {
     checkout scm
     def workspace = pwd()
-    def TOMCAT_HOME = "/opt/tomcat1"
-    def MVN_HOME = tool 'maven-3.5.0'
+    def TOMCAT_HOME = "/var/tmp/tomcat/apache-tomcat-8.5.8"
+    def MVN_HOME = tool 'maven-3.2.5'
     def MVN_BIN = "${MVN_HOME}/bin/mvn"
     stage('InitDB') {
         echo "InitDB start..."
@@ -29,10 +29,9 @@ node("master") {
         sh """
             ${MVN_BIN} package -Dmaven.test.skip=true
             ${TOMCAT_HOME}/bin/catalina.sh stop || true
-            rm -rf ${TOMCAT_HOME}/webapps/ROOT/*
-            cp target/javaweb.war ${TOMCAT_HOME}/webapps/ROOT/
-            unzip ${TOMCAT_HOME}/webapps/ROOT/javaweb.war -d ${TOMCAT_HOME}/webapps/ROOT >/dev/null
-            rm -f ${TOMCAT_HOME}/webapps/ROOT/javaweb.war
+            cp target/javaweb.war ${TOMCAT_HOME}/webapps/
+            unzip ${TOMCAT_HOME}/webapps/javaweb.war -d ${TOMCAT_HOME}/webapps >/dev/null
+            rm -f ${TOMCAT_HOME}/webapps/javaweb.war
             ${TOMCAT_HOME}/bin/catalina.sh start
         """
     }
