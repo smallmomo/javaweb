@@ -3,7 +3,7 @@ node("master") {
     checkout scm
     def workspace = pwd()
     def TOMCAT_HOME = "/var/tmp/tomcat/apache-tomcat-8.5.8"
-    def MVN_HOME = tool 'maven-3.2.5'
+    def MVN_HOME = tool 'Maven'
     def MVN_BIN = "${MVN_HOME}/bin/mvn"
     stage('InitDB') {
         echo "InitDB start..."
