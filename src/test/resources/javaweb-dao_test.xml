@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <!-- 扫描com.baobaotao.dao包下所有标注@Repository的DAO组件 -->
+    <context:component-scan base-package="com.cmback.xncoding.mapper"/>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis.xml"/>
+        <property name="mapperLocations">
+            <array>
+                <value>classpath:mapper/*.xml</value>
+            </array>
+        </property>
+        <property name="plugins">
+            <array>
+                <bean class="com.github.pagehelper.PageHelper">
+                    <property name="properties">
+                        <value>
+                            dialect=mysql
+                            reasonable=true
+                        </value>
+                    </property>
+                </bean>
+                <bean class="com.github.abel533.mapperhelper.MapperInterceptor">
+                    <property name="properties">
+                        <value>
+                            mappers=com.github.abel533.mapper.Mapper
+                            IDENTITY=MYSQL
+                            notEmpty=true
+                        </value>
+                    </property>
+                </bean>
+            </array>
+        </property>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+          p:basePackage="com.cmback.xncoding.mapper,com.github.abel533.entity.mapper"/>
+
+    <bean id="entityMapper" class="com.github.abel533.entity.EntityMapper" scope="prototype">
+        <constructor-arg ref="commonMapper"/>
+    </bean>
+
+    <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" scope="prototype">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+
+    <aop:aspectj-autoproxy/>
+
+    <aop:config>
+        <aop:pointcut id="appService" expression="execution(* com.cmback.xncoding.services.*.*Service*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="appService"/>
+    </aop:config>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="select*" read-only="true"/>
+            <tx:method name="find*" read-only="true"/>
+            <tx:method name="get*" read-only="true"/>
+            <tx:method name="*"/>
+        </tx:attributes>
+    </tx:advice>
+
+
+    <!--<bean id="sessionFactory"-->
+    <!--class="org.mybatis.spring.SqlSessionFactoryBean"-->
+    <!--p:dataSource-ref="dataSource"-->
+    <!--p:configLocation="classpath:mybatis.xml"-->
+    <!--p:mapperLocations="classpath:mapper/*.xml"/>-->
+
+    <!--<bean class="org.mybatis.spring.SqlSessionTemplate">-->
+    <!--<constructor-arg ref="sessionFactory"/>-->
+    <!--</bean>-->
+
+    <!--<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"-->
+    <!--p:sqlSessionFactoryBeanName="sessionFactory"-->
+    <!--p:basePackage="com.winhong.fastloan.dao"/>-->
+
+    <!--<tx:annotation-driven transaction-manager="transactionManager"/>-->
+    <bean id="transactionManager"
+          class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+          p:dataSource-ref="dataSource"/>
+
+    <bean id="dataSource"
+          class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close"
+          p:driverClassName="${jdbc.driver}"
+          p:url="${jdbc.url}"
+          p:username="${jdbc.username}"
+          p:password="${jdbc.password}"
+          p:filters="${jdbc.filters}"
+          p:maxActive="${jdbc.maxActive}"
+          p:initialSize="${jdbc.initialSize}"
+          p:maxWait="${jdbc.maxWait}"
+          p:minIdle="${jdbc.minIdle}"
+          p:timeBetweenEvictionRunsMillis="${jdbc.timeBetweenEvictionRunsMillis}"
+          p:minEvictableIdleTimeMillis="${jdbc.minEvictableIdleTimeMillis}"
+          p:validationQuery="${jdbc.validationQuery}"
+          p:testWhileIdle="${jdbc.testWhileIdle}"
+          p:testOnBorrow="${jdbc.testOnBorrow}"
+          p:testOnReturn="${jdbc.testOnReturn}"
+          p:maxOpenPreparedStatements="${jdbc.maxOpenPreparedStatements}"
+          p:removeAbandoned="${jdbc.removeAbandoned}"
+          p:removeAbandonedTimeout="${jdbc.removeAbandonedTimeout}"
+          p:logAbandoned="${jdbc.logAbandoned}"/>
+
+    <!-- 数据源配置,使用应用服务器的数据库连接池 -->
+    <!--<jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/ExampleDB" />-->
+</beans>

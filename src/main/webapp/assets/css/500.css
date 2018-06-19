@@ -1,0 +1,28 @@
+/* CSS Document */
+body, p, ul, ol, li, img, div, strong, em {border:none;margin: 0;padding: 0;}
+ul, ol, li {list-style: none outside none;}
+.clear{ clear:both;}
+.wall980{ width:980px; margin: 0 auto;}
+p{ overflow:hidden;}
+.h121{ height:121px;}
+.h100{ height:100px;}
+.h86{ height:86px;}
+.h249{ height:249px;}
+.h275{ height:275px;}
+.p90{ padding:90px 0;}
+.body_500{background:#eff0f0;}
+.body_503{background:#fff;}
+
+.error_500_body{ width:100%; padding: 90px 0; background:#eff0f0;}
+.error_500_left{ width:568px; float: left; overflow:hidden;}
+.error_500_right{float: left; width:412px; overflow:hidden; }
+.error_500_content{height:183px;}
+.error_500_content ul{ float:left; line-height:29px; margin:12px 8px 0; font-size:14px;}
+.error_500_content ul a{ color:#0e51e7; margin: 0 4px;}
+
+.error_503_body{ width:100%; padding: 90px 0; background:#fff;}
+.error_503_left{ width:565px; float: left; overflow:hidden;}
+.error_503_right{float: left; width:415px; overflow:hidden; }
+.error_503_content{height:183px;}
+.error_503_content ul{ float:left; line-height:29px; margin:12px 15px 0; font-size:14px;}
+.error_503_content ul a{ color:#c04d7f; margin: 0 4px;}
